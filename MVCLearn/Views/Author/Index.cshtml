@@ -1,0 +1,6 @@
+﻿@model IEnumerable<Author>
+
+@foreach(var author in Model)
+{
+    <partial name="_AuthorCard" model="author" />
+}

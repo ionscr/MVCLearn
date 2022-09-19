@@ -1,23 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MVCLearn.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MVCLearn.Controllers
 {
     public class HomeController : Controller
     {
-        private IAuthorRepository _authorRepository;
-        public HomeController(IAuthorRepository authorRepository)
+        private readonly ILogger<HomeController> _logger;
+        public HomeController(ILogger<HomeController> logger)
         {
-            _authorRepository = authorRepository;
+            _logger = logger;
         }
         public IActionResult Index()
         {
-            var content = _authorRepository.GetAuthors();
-            return View(content);
+            _logger.LogInformation("Home page");
+            ViewBag.Title = "MVCLearn";
+            return View();
         }
     }
 }

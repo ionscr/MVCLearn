@@ -1,0 +1,8 @@
+﻿@model Author
+
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <full-name first-name="@Model.FirstName" last-name="@Model.LastName"> </full-name>
+            <p class="card-text">@await Component.InvokeAsync("AuthorPublications", Model.Id)</p>
+        </div>
+    </div>

@@ -1,4 +1,5 @@
-﻿using MVCLearn.Domain;
+﻿using MVCLearn.Core.Dto;
+using MVCLearn.Domain;
 using MVCLearn.Services;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace MVCLearn.Models
     {
         IEnumerable<Author> GetAuthors();
         Author GetAuthor(Guid id);
-        IEnumerable<Author> AddAuthor(Author author);
+        IEnumerable<Author> AddAuthor(AuthorDto author);
         IEnumerable<Author> DeleteAuthor(Guid id);
     }
     public class AuthorRepository : IAuthorRepository
@@ -29,9 +30,9 @@ namespace MVCLearn.Models
             throw new NotImplementedException();
         }
         
-        public IEnumerable<Author> AddAuthor(Author author)
+        public IEnumerable<Author> AddAuthor(AuthorDto author)
         {
-            throw new NotImplementedException();
+            return _webApiService.AddAuthor(author).Result.ToList();
         }
 
         public IEnumerable<Author> DeleteAuthor(Guid id)
