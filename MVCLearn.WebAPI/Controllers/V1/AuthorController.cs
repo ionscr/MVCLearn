@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MVCLearn.Core.Dto;
 using MVCLearn.Domain;
 using MVCLearn.Infrastructure.Data;
 using System;
@@ -8,6 +9,7 @@ using System.Linq;
 namespace MVCLearn.WebAPI.Controllers
 {
     [ApiController]
+    [ApiVersion("1.0")]
     [Route("api/[controller]")]
     public class AuthorController : ControllerBase
     {
@@ -34,10 +36,15 @@ namespace MVCLearn.WebAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult<IEnumerable<Author>> AddAuthor([FromBody] Author author)
+        public ActionResult<IEnumerable<Author>> AddAuthor([FromBody] AuthorDto author)
         {
-            author.Id = Guid.NewGuid();
-            _appDbContext.Authors.Add(author);
+            var authorToAdd = new Author()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = author.FirstName,
+                LastName = author.LastName
+            };
+            _appDbContext.Authors.Add(authorToAdd);
             _appDbContext.SaveChanges();
             var result = _appDbContext.Authors.ToList();
             return Ok(result);

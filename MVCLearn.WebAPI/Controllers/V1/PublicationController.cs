@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using MVCLearn.Core.Dto;
 using MVCLearn.Domain;
 using MVCLearn.Infrastructure.Data;
 using System;
@@ -6,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MVCLearn.WebAPI.Controllers
+namespace MVCLearn.WebAPI.Controllers.V1
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -21,24 +24,31 @@ namespace MVCLearn.WebAPI.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Publication>> GetPublications()
         {
-            var result = _appDbContext.Publications.ToList();
+            var result = _appDbContext.Publications.Include(p => p.Author).ToList();
             return Ok(result);
         }
         [Route("{id}")]
         [HttpGet]
         public ActionResult<Publication> GetPublication(Guid id)
         {
-            var result = _appDbContext.Publications.FirstOrDefault(p => p.Id == id);
+            var result = _appDbContext.Publications.Include(p => p.Author).FirstOrDefault(p => p.Id == id);
             if (result != null)
                 return Ok(result);
             else return NotFound();
         }
 
         [HttpPost]
-        public ActionResult<IEnumerable<Publication>> AddPublication([FromBody] Publication publication)
+        public ActionResult<IEnumerable<Publication>> AddPublication([FromBody] PublicationDto publication)
         {
-            publication.Id = Guid.NewGuid();
-            _appDbContext.Publications.Add(publication);
+            var publicationToAdd = new Publication
+            {
+                Id = Guid.NewGuid(),
+                Author = _appDbContext.Authors.FirstOrDefault(p => p.Id == publication.AuthorId),
+                Content = publication.Content,
+                Title = publication.Title
+                
+            };
+            _appDbContext.Publications.Add(publicationToAdd);
             _appDbContext.SaveChanges();
             var result = _appDbContext.Publications.ToList();
             return Ok(result);
